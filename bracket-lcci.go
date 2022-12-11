@@ -1,5 +1,7 @@
 package leetcode
 
+// 相同题目: generate-parentheses.go
+
 // 算法分析:
 //
 // degree := “左括号的数量” - “右括号的数量”;
