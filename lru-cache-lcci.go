@@ -23,29 +23,34 @@ func ConstructorLRU(capacity int) LRUCache {
 }
 
 func (this *LRUCache) Get(key int) int {
-	if e, ok := this.search[key]; ok {
+	e, ok := this.search[key]
+	if ok {
 		this.list.MoveToFront(e)
-		return e.Value.(pair).value
+		return e.Value.(*pair).value
 	}
+
 	return -1
 }
 
 func (this *LRUCache) Put(key int, value int) {
-	item := pair{key: key, value: value}
-
-	if e, ok := this.search[key]; ok {
-		e.Value = item
+	// key 存在
+	e, ok := this.search[key]
+	if ok {
+		e.Value.(*pair).value = value
 		this.list.MoveToFront(e)
 		return
 	}
 
-	e := this.list.PushFront(item)
+	// key 不存在
+	e = this.list.PushFront(
+		&pair{key: key, value: value},
+	)
 	this.search[key] = e
 
+	// 容量检查
 	if this.list.Len() > this.capacity {
-		if e := this.list.Back(); e != nil {
-			item := this.list.Remove(e)
-			delete(this.search, item.(pair).key)
-		}
+		e = this.list.Back()
+		this.list.Remove(e)
+		delete(this.search, e.Value.(*pair).key)
 	}
 }
