@@ -1,19 +1,26 @@
 package leetcode
 
 // KMP substr 实现.
+
+// KMP 核心解决的问题: 快速移动 needle, 消除无效的循环;
 //
-// 1. O(m) 实现子串的 “最长前缀长度”;
-// 2. O(n) 实现长串的查找;
+// 核心算法是: next
+// 逻辑理解: 下一个待比较的字符;
+//
+// 时间复杂度: O(m+n)
+
 func strStr(haystack string, needle string) int {
-	// next 记录: 最长的前、后缀长度.
-	// 长度: 理解为"下一个,待匹配的字符下标".
+
+	// 构造 next 数组
 	next := make([]int, len(needle))
 
-	// 构造: 最长前缀长度数组;
-	// 1. 如果 s[i] == s[j], next[i] = j+1. 同时移动 j 和 i;
-	// 2. 如果 s[i] != s[j], j = next[j-1]. 循环直到: j = 0 || s[i] == s[j]. 移动 i;
+	// next 计算规则:
+	// - next[0] = 0. 单一元素, 没有真前缀;
+	// - a[i] == a[j], next[i] = j+1. i++, j++;
+	// - a[i] != a[j], j = next[j-1]. 直到: a[i] == a[j] 或者 j = 0;
+	//                                否则: next[i] = 0, i++;
 
-	next[0] = 0 // 常量. 单一字符不存在真前缀. 所以, 固定为 0.
+	next[0] = 0
 	for j, i := 0, 1; i < len(needle); /**/ {
 		if needle[i] == needle[j] {
 			next[i] = j + 1
@@ -31,14 +38,13 @@ func strStr(haystack string, needle string) int {
 		}
 	}
 
-	// 查找子串.
-	for i, j := 0, 0; i < len(haystack) && j < len(needle); /**/ {
+	// 查找子串
+	for i, j := 0, 0; i < len(haystack); /**/ {
 		if haystack[i] == needle[j] {
 			i, j = i+1, j+1
-			if j == len(needle) {
-				return i - j // 已完成匹配子串.
+			if j == len(needle) { // 子串完全匹配, 返回结果;
+				return i - j
 			}
-
 			continue
 		}
 
@@ -47,7 +53,7 @@ func strStr(haystack string, needle string) int {
 		}
 
 		if haystack[i] != needle[j] {
-			i++
+			i = i + 1
 		}
 	}
 
