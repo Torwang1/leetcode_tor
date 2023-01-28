@@ -2,62 +2,60 @@ package leetcode
 
 // 相同题目: bracket-lcci.go
 
-// 题目: 数字 n, 输出有效括号;
+// 题目: 数字 n, 输出所有有效括号;
 //
-// 思路:
-// (   )
-// (   )
-//  ...
-// (   )
-// 输出 n 个序列, 同时保证括号有效;
+// 特征: 所有有效括号, 回溯(递归)输出所有可能;
 //
-// 输出所有可能, 需要 回溯 算法;
+// 有效括号的条件: '(' 出现次数 >= ')' 出现次数;
 
 func generateParenthesisII(n int) []string {
-	ans := make([]string, 0)
-	chars := make([]byte, 0, 2*n)
+	ans := []string{}
 
+	chars := make([]byte, 0, 2*n)
 	parenthesisII(&ans, &chars, n, n)
 
 	return ans
 }
 
-func parenthesisII(ans *[]string, chars *[]byte, left int, right int) {
-	nexts := nextCharsII(left, right)
-	if len(nexts) == 0 {
+// 回溯实现
+func parenthesisII(ans *[]string, chars *[]byte, leftn int, rightn int) {
+	next := nextCharsII(leftn, rightn)
+	if len(next) == 0 {
 		*ans = append(*ans, string(*chars))
 		return
 	}
 
-	for _, c := range nexts {
+	for _, c := range next {
 		*chars = append(*chars, c)
+
 		switch c {
 		case '(':
-			parenthesisII(ans, chars, left-1, right)
+			parenthesisII(ans, chars, leftn-1, rightn)
 		case ')':
-			parenthesisII(ans, chars, left, right-1)
+			parenthesisII(ans, chars, leftn, rightn-1)
 		}
+
 		*chars = (*chars)[:len(*chars)-1]
 	}
 }
 
-// left:  左括号的剩余数量;
-// right: 右括号的剩余数量;
-func nextCharsII(left int, right int) []byte {
+// next 有效括号的条件, 其中 leftn rightn 表示剩余出现次数:
+// - leftn == rightn == 0, next = []
+// - leftn == rightn, next = ['(']
+// - leftn < rightn && leftn == 0, next = [')']
+// - leftn < rightn, next = ['(', ')']
+func nextCharsII(leftn int, rightn int) []byte {
 	result := []byte{}
 
 	switch {
-	case left == 0 && right == 0:
-		// do nothing. 边界 case (n=0) 或者 迭代结束.
-	case left > 0 && right > 0:
+	case leftn == rightn && leftn == 0:
+		// no char
+	case leftn == rightn:
 		result = append(result, '(')
-		if left < right {
-			result = append(result, ')')
-		}
-	case left == 0 && right > 0:
+	case leftn < rightn && leftn == 0:
 		result = append(result, ')')
-	default:
-		panic("why here")
+	case leftn < rightn:
+		result = append(result, '(', ')')
 	}
 
 	return result
