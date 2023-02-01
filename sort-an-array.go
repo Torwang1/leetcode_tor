@@ -14,9 +14,7 @@ import (
 func sortArray(nums []int) []int {
 	rand.Seed(time.Now().Unix())
 
-	if len(nums) > 1 {
-		quickSort(nums, func(i1, i2 int) bool { return i1 < i2 })
-	}
+	quickSort(nums)
 
 	return nums
 }
@@ -25,26 +23,48 @@ func sortArray(nums []int) []int {
 //
 // 其中:
 // - rindex 随机下标. 解决: 有序数组导致快排性能下降;
-func quickSort(nums []int, less func(int, int) bool) {
+// - allsame 解决: 所有元素相同导致的性能下降; rindex 无法解决这个场景.
+//
+func quickSort(nums []int) {
+	if len(nums) == 0 || len(nums) == 1 {
+		return
+	}
+
 	rindex := rand.Intn(len(nums))
 
 	nums[0], nums[rindex] = nums[rindex], nums[0]
 
 	target := nums[0]
 
+	allsame := true
+
 	i, j := 0, len(nums)-1
 	for i < j {
 		// 寻找比 target 小的值, 放到 i 的位置;
-		for i < j && !less(nums[j], target) {
-			j--
+		for i < j {
+			if nums[j] > target {
+				allsame = false
+				j--
+			} else if nums[j] == target {
+				j--
+			} else {
+				nums[i] = nums[j]
+				break
+			}
 		}
-		nums[i] = nums[j]
 
 		// 寻找比 target 大的值, 放到 j 的位置;
-		for i < j && less(nums[i], target) {
-			i++
+		for i < j {
+			if nums[i] < target {
+				allsame = false
+				i++
+			} else if nums[j] == target {
+				i++
+			} else {
+				nums[j] = nums[i]
+				break
+			}
 		}
-		nums[j] = nums[i]
 	}
 
 	nums[i] = target
@@ -53,10 +73,10 @@ func quickSort(nums []int, less func(int, int) bool) {
 	// - nums[x] < nums[i], x < i
 	// - nums[x] > nums[i], x > i
 
-	if slice := nums[:i]; len(slice) > 1 {
-		quickSort(slice, less)
+	if allsame {
+		return
 	}
-	if slice := nums[i+1:]; len(slice) > 1 {
-		quickSort(nums[i+1:], less)
-	}
+
+	quickSort(nums[:i])
+	quickSort(nums[i+1:])
 }
