@@ -2,17 +2,14 @@ package leetcode
 
 // 题目: 无重复字符的最长子串.
 //
-// 滑动窗口 /或者说是/ 双指针.
-
+// 条件: 不含重复字符, hash 计数器.
+//
+// 主体算法: 滑动窗口(双指针).
+//
+// 特征:
+// - counter[x] 只能取值 0、1;
 func lengthOfLongestSubstring(s string) int {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
-	var ans int
+	ans := 0
 
 	// 计数器的数值, 只可能是 0 或 1.
 	counter := map[byte]int{}
@@ -21,15 +18,19 @@ func lengthOfLongestSubstring(s string) int {
 	for l, r := 0, 0; r < len(s); /**/ {
 		c := s[r]
 
+		// 左边界,右移.
 		for counter[c] > 0 {
-			counter[s[l]] = 0 // 左边界右移.
+			counter[s[l]] = 0
 			l++
 		}
 
-		counter[c] = 1 // 右边界右移.
+		// 右边界, 加入.
+		counter[c] = 1
 		r++
 
-		ans = max(ans, r-l)
+		if length := r - l; length > ans {
+			ans = length
+		}
 	}
 
 	return ans
