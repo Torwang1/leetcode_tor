@@ -1,33 +1,34 @@
 package leetcode
 
-import "math"
+// 题目: 最长严格递增子序列的长度.
+//
+// 解法: 动态规划;
+//
+// 递推方程:
+// - dp(i) 表示以 nums[i] 结尾的最长严格递增子序列长度;
+// - dp(i) = max(dp(j)+1), j < i && nums[j] < nums[i];
+// - dp(0) = 1;
+//
 
 func lengthOfLIS(nums []int) int {
-	var max int = math.MinInt
 
 	dp := make([]int, len(nums))
+	dp[0] = 1
 
-	maxInt := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
-	dpFunc := func(i int) int {
-		var m int = 0
-		for k := 0; k < i; k++ {
-			if nums[k] < nums[i] {
-				m = maxInt(m, dp[k])
+	ans := 1
+	for i := 1; i < len(dp); i++ {
+		var max int
+		for j := 0; j < i; j++ {
+			if nums[i] > nums[j] && dp[j] > max {
+				max = dp[j]
 			}
 		}
-		return m + 1
+
+		dp[i] = max + 1
+		if dp[i] > ans {
+			ans = dp[i]
+		}
 	}
 
-	for i := 0; i < len(nums); i++ {
-		dp[i] = dpFunc(i)
-		max = maxInt(max, dp[i])
-	}
-
-	return max
+	return ans
 }
