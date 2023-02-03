@@ -28,15 +28,15 @@ func mergeKLists(lists []*ListNode) *ListNode {
 	}
 	heap.Init(&h)
 
-	var ans, last *ListNode
+	var head, tail *ListNode
 	appendList := func(node *ListNode) {
-		switch {
-		case ans == nil:
-			ans = node
-		default:
-			last.Next = node
+		if head == nil && tail == nil {
+			head = node
+			tail = node
+			return
 		}
-		last = node
+		tail.Next = node
+		tail = node
 	}
 
 	// 弹出堆顶元素, 剩余链表重新加入堆. 直到堆空为止;
@@ -57,7 +57,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 		}
 	}
 
-	return ans
+	return head
 }
 
 // 堆元素需要保存: 1) Val, 2) 剩余链表的指针;
