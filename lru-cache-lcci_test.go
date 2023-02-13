@@ -13,19 +13,19 @@ func TestLRUCache(t *testing.T) {
 
 	lru.Put(1, 1)
 	require.Equal(t, 1, lru.list.Len())
-	require.Equal(t, 1, len(lru.search))
+	require.Equal(t, 1, len(lru.hash))
 
 	lru.Put(2, 2)
 	require.Equal(t, 2, lru.list.Len())
-	require.Equal(t, 2, len(lru.search))
+	require.Equal(t, 2, len(lru.hash))
 
 	lru.Get(1)
 	require.Equal(t, 2, lru.list.Len())
-	require.Equal(t, 2, len(lru.search))
+	require.Equal(t, 2, len(lru.hash))
 
 	lru.Put(3, 3)
 	require.Equal(t, 2, lru.list.Len())
-	require.Equal(t, 2, len(lru.search))
+	require.Equal(t, 2, len(lru.hash))
 
 	require.Equal(t, 2, lru.Get(2))
 
