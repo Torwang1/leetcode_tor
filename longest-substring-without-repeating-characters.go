@@ -6,16 +6,15 @@ package leetcode
 //
 // 主体算法: 滑动窗口(双指针).
 //
-// 特征:
-// - counter[x] 只能取值 0、1;
+
 func lengthOfLongestSubstring(s string) int {
 	ans := 0
 
 	// 计数器的数值, 只可能是 0 或 1.
 	counter := map[byte]int{}
 
-	// 左闭右开区间, 方便计算元素数量.
-	for l, r := 0, 0; r < len(s); /**/ {
+	// 左右指针
+	for l, r := 0, 0; r < len(s); r++ {
 		c := s[r]
 
 		// 左边界,右移.
@@ -26,9 +25,8 @@ func lengthOfLongestSubstring(s string) int {
 
 		// 右边界, 加入.
 		counter[c] = 1
-		r++
 
-		if length := r - l; length > ans {
+		if length := r - l + 1; length > ans {
 			ans = length
 		}
 	}
