@@ -14,7 +14,7 @@ type ListNode struct {
 // - 所有链表的头部元素, 组成小根堆;
 // - 每次弹出最小元素, 并将剩余元素重新入堆;
 //
-// 时间复杂度: 建堆 O(k), 弹出最小元素 O(n * logk)
+// 时间复杂度: 建堆 O(k*logk), 弹出最小元素 n*O(logk)
 
 func mergeKLists(lists []*ListNode) *ListNode {
 	h := make(ListNodeHeap, 0, len(lists))
@@ -41,11 +41,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 	// 弹出堆顶元素, 剩余链表重新加入堆. 直到堆空为止;
 	// heap.Pop() 需要保证至少有一个元素;
-	for {
-		if len(h) == 0 {
-			break
-		}
-
+	for len(h) > 0 {
 		node := heap.Pop(&h).(*ListNode)
 		next := node.Next
 
