@@ -11,5 +11,5 @@ func TestReverseKGroup(t *testing.T) {
 
 	head := node1
 
-	reverseKGroup(head, 2)
+	reverseKGroup(head, 3)
 }
