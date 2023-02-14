@@ -8,6 +8,7 @@ package leetcode
  *     Right *TreeNode
  * }
  */
+
 func zigzagLevelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return nil
@@ -15,13 +16,12 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 
 	ans := [][]int{}
 
-	reverse := false
-	queue := []*TreeNode{root}
+	current := []*TreeNode{root}
 
-	for len(queue) != 0 {
+	for i := 0; len(current) != 0; i++ {
 		var next []*TreeNode
 
-		for _, node := range queue {
+		for _, node := range current {
 			if node.Left != nil {
 				next = append(next, node.Left)
 			}
@@ -31,24 +31,18 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 		}
 
 		var record []int
-		if reverse {
-			for i := len(queue) - 1; i >= 0; i-- {
-				record = append(record, queue[i].Val)
+		if i%2 == 0 {
+			for i := 0; i < len(current); i++ {
+				record = append(record, current[i].Val)
 			}
 		} else {
-			for i := 0; i < len(queue); i++ {
-				record = append(record, queue[i].Val)
+			for i := len(current) - 1; i >= 0; i-- {
+				record = append(record, current[i].Val)
 			}
 		}
 		ans = append(ans, record)
 
-		queue = next
-		switch reverse {
-		case true:
-			reverse = false
-		case false:
-			reverse = true
-		}
+		current = next
 	}
 
 	return ans
