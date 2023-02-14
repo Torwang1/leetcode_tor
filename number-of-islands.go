@@ -8,41 +8,36 @@ package leetcode
 // - 已经被识别为‘岛屿’的位置, 标记为 0.
 
 func numIslands(grid [][]byte) int {
+	const water = '0'
 	const land = '1'
 
-	rn, cn := len(grid), len(grid[0])
+	m, n := len(grid), len(grid[0])
+
+	var dfs func(grid [][]byte, i, j int)
+	dfs = func(grid [][]byte, i, j int) {
+		if (i < 0 || i >= m) || (j < 0 || j >= n) {
+			return
+		}
+		if grid[i][j] == water {
+			return
+		}
+
+		grid[i][j] = water
+		dfs(grid, i-1, j)
+		dfs(grid, i+1, j)
+		dfs(grid, i, j-1)
+		dfs(grid, i, j+1)
+	}
 
 	var number int
-	for r := 0; r < rn; r++ {
-		for c := 0; c < cn; c++ {
+	for r := 0; r < m; r++ {
+		for c := 0; c < n; c++ {
 			if grid[r][c] == land {
 				number++
-				DFMark(grid, r, c)
+				dfs(grid, r, c)
 			}
 		}
 	}
 
 	return number
-}
-
-// 深度优先遍历
-func DFMark(grid [][]byte, r, c int) {
-	const water = '0'
-	const land = '1'
-
-	rn, cn := len(grid), len(grid[0])
-
-	grid[r][c] = water
-	if r-1 >= 0 && grid[r-1][c] == land {
-		DFMark(grid, r-1, c)
-	}
-	if r+1 < rn && grid[r+1][c] == land {
-		DFMark(grid, r+1, c)
-	}
-	if c-1 >= 0 && grid[r][c-1] == land {
-		DFMark(grid, r, c-1)
-	}
-	if c+1 < cn && grid[r][c+1] == land {
-		DFMark(grid, r, c+1)
-	}
 }
