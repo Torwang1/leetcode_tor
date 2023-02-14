@@ -10,6 +10,7 @@ package leetcode
  *     Right *TreeNode
  * }
  */
+
 func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return nil
@@ -17,11 +18,14 @@ func levelOrder(root *TreeNode) [][]int {
 
 	ans := [][]int{}
 
-	queue := []*TreeNode{root}
-	for len(queue) > 0 {
+	// current: 当前层次
+	// next: 下一层
+	current := []*TreeNode{root}
+
+	for len(current) > 0 {
 		next := []*TreeNode{}
 
-		for _, node := range queue {
+		for _, node := range current {
 			if node.Left != nil {
 				next = append(next, node.Left)
 			}
@@ -31,12 +35,12 @@ func levelOrder(root *TreeNode) [][]int {
 		}
 
 		var result []int
-		for _, node := range queue {
+		for _, node := range current {
 			result = append(result, node.Val)
 		}
 		ans = append(ans, result)
 
-		queue = next
+		current = next
 	}
 
 	return ans
