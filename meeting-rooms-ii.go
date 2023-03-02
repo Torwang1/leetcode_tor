@@ -15,20 +15,13 @@ func minMeetingRooms(intervals [][]int) int {
 	begin := 0 // 开始时间(下标)
 	end := 1   // 结束时间(下标)
 
-	var ans int
-
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
 	// 针对开始时间排序;
 	sort.Slice(intervals, func(i, j int) bool { return intervals[i][begin] < intervals[j][begin] })
 
 	// 首先: 从堆中移除“已经结束”的会议;
 	// 再者: 将新开始的会议加入, 计算会议室的最大数量;
+
+	var ans int
 
 	top := 0 // 堆顶元素
 	h := make(IntHeap, 0)
@@ -39,7 +32,9 @@ func minMeetingRooms(intervals [][]int) int {
 
 		heap.Push(&h, meeting[end])
 
-		ans = max(ans, len(h))
+		if len(h) > ans {
+			ans = len(h)
+		}
 	}
 
 	return ans
